@@ -4,6 +4,7 @@ CAPTION = TITLE + ' ' + VERSION
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
+TILE_SIZE = 64
 
 OVERLAY_POSITIONS = {
     'tool': (40, SCREEN_HEIGHT - 15),
@@ -15,6 +16,7 @@ class Graphics:
     CHARACTER = ROOT + 'character/' 
     OVERLAY = ROOT + 'overlay/'
     WORLD = ROOT + 'world/'
+    WATER = ROOT + 'water/'
 
 LAYERS = {
     'water': 0,
