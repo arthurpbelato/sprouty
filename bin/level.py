@@ -28,7 +28,7 @@ class Level:
                 Generic((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites)
 
         for x, y, surf in tmx_data.get_layer_by_name('Fence').tiles():
-                Generic((x * TILE_SIZE, y * TILE_SIZE), surf, [self.all_sprites, self.collison_sprites])
+            Generic((x * TILE_SIZE, y * TILE_SIZE), surf, [self.all_sprites, self.collison_sprites])
 
         water_frames = import_folder(Graphics.WATER)
         for x, y, surf in tmx_data.get_layer_by_name('Water').tiles():
@@ -52,9 +52,7 @@ class Level:
             surf = pygame.image.load(f'{Graphics.WORLD}ground.png').convert_alpha(),
             groups = self.all_sprites,
             z = LAYERS['ground'])
-        
 
-    
     def run(self, dt):
         self.display_surface.fill('black')
         self.all_sprites.custom_draw(self.player)
@@ -70,9 +68,8 @@ class CameraGroup(pygame.sprite.Group):
     def custom_draw(self, player: Player):
         self.offset.x = player.rect.centerx - SCREEN_WIDTH / 2
         self.offset.y = player.rect.centery - SCREEN_HEIGHT / 2
-
         for layer in LAYERS.values():
-            for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.center):
+            for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
                 if sprite.z == layer:
                     offset_rect = sprite.rect.copy()
                     offset_rect.center -= self.offset

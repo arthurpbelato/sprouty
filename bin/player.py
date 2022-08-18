@@ -46,15 +46,6 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
 
         if not self.timers['tool_use'].active:
-            if keys[pygame.K_RIGHT]:
-                self.direction.x = 1
-                self.status = 'right'
-            elif keys[pygame.K_LEFT]:
-                self.direction.x = -1
-                self.status = 'left'
-            else: 
-                self.direction.x = 0
-
             if keys[pygame.K_UP]:
                 self.direction.y = -1
                 self.status = 'up'
@@ -63,6 +54,15 @@ class Player(pygame.sprite.Sprite):
                 self.status = 'down'
             else: 
                 self.direction.y = 0
+
+            if keys[pygame.K_RIGHT]:
+                self.direction.x = 1
+                self.status = 'right'
+            elif keys[pygame.K_LEFT]:
+                self.direction.x = -1
+                self.status = 'left'
+            else: 
+                self.direction.x = 0
 
             if keys[pygame.K_SPACE]:
                 self.timers['tool_use'].activate()
@@ -87,7 +87,6 @@ class Player(pygame.sprite.Sprite):
                 if self.seed_index >= len(self.seeds):
                     self.seed_index = 0
                 self.selected_seed = self.seeds[self.seed_index]
-
 
     def collision(self, direction): 
         for sprite in self.collision_sprites.sprites():
