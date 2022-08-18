@@ -9,7 +9,9 @@ from support import *
 class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
+        
         self.all_sprites = CameraGroup()
+        self.collison_sprites = pygame.sprite.Group()
 
         self.setup()
         self.overlay = Overlay(self.player)
@@ -26,24 +28,31 @@ class Level:
                 Generic((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites)
 
         for x, y, surf in tmx_data.get_layer_by_name('Fence').tiles():
-                Generic((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites)
+                Generic((x * TILE_SIZE, y * TILE_SIZE), surf, [self.all_sprites, self.collison_sprites])
 
         water_frames = import_folder(Graphics.WATER)
         for x, y, surf in tmx_data.get_layer_by_name('Water').tiles():
-                Water((x * TILE_SIZE, y * TILE_SIZE), water_frames, self.all_sprites)
+            Water((x * TILE_SIZE, y * TILE_SIZE), water_frames, self.all_sprites)
 
         for obj in tmx_data.get_layer_by_name('Decoration'):
-            WildFlower((obj.x, obj.y), obj.image, self.all_sprites)
+            WildFlower((obj.x, obj.y), obj.image, [self.all_sprites, self.collison_sprites])
 
         for obj in tmx_data.get_layer_by_name('Trees'):
-            Tree((obj.x, obj.y), obj.image, self.all_sprites, obj.name)
+            Tree((obj.x, obj.y), obj.image, [self.all_sprites, self.collison_sprites], obj.name)
+
+        for x, y, surf in tmx_data.get_layer_by_name('Collision').tiles():
+            Generic((x * TILE_SIZE, y * TILE_SIZE), pygame.Surface((TILE_SIZE, TILE_SIZE)), self.collison_sprites)
+
+        for obj in tmx_data.get_layer_by_name('Player'):
+            if obj.name == 'Start':
+                self.player = Player((obj.x, obj.y), self.all_sprites, self.collison_sprites)
 
         Generic(
             pos = (0,0), 
             surf = pygame.image.load(f'{Graphics.WORLD}ground.png').convert_alpha(),
             groups = self.all_sprites,
             z = LAYERS['ground'])
-        self.player = Player((640, 360), self.all_sprites)
+        
 
     
     def run(self, dt):
