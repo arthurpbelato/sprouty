@@ -38,6 +38,13 @@ class Player(pygame.sprite.Sprite):
 
         self.tree_sprites = tree_sprites
 
+        self.item_inventory = {
+            'wood':   0,
+            'apple':  0,
+            'tomato': 0,
+            'corn':   0
+        }
+
     def get_target_pos(self):
         self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
 

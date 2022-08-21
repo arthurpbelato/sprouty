@@ -16,6 +16,9 @@ class Level:
         self.setup()
         self.overlay = Overlay(self.player)
 
+    def player_add(self, item, amount = 1):
+        self.player.item_inventory[item] += amount
+
     def setup(self):
         tmx_data = load_pygame('data/map.tmx')
 
@@ -38,7 +41,7 @@ class Level:
             WildFlower((obj.x, obj.y), obj.image, [self.all_sprites, self.collison_sprites])
 
         for obj in tmx_data.get_layer_by_name('Trees'):
-            Tree((obj.x, obj.y), obj.image, [self.all_sprites, self.collison_sprites, self.tree_sprites], obj.name)
+            Tree((obj.x, obj.y), obj.image, [self.all_sprites, self.collison_sprites, self.tree_sprites], obj.name, self.player_add)
 
         for x, y, surf in tmx_data.get_layer_by_name('Collision').tiles():
             Generic((x * TILE_SIZE, y * TILE_SIZE), pygame.Surface((TILE_SIZE, TILE_SIZE)), self.collison_sprites)
@@ -61,6 +64,7 @@ class Level:
         self.all_sprites.custom_draw(self.player)
         self.all_sprites.update(dt)
         self.overlay.display()
+        print(self.player.item_inventory)
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
