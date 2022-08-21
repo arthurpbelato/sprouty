@@ -32,6 +32,11 @@ class Water(Generic):
     def update(self, dt):
         self.animate(dt)
 
+class Interaction(Generic):
+    def __init__(self, pos, size, groups, name):
+        surf = pygame.Surface(size)
+        super().__init__(pos, surf, groups)
+        self.name = name
 class WildFlower(Generic):
     def __init__(self, pos, surf, groups):
         super().__init__(pos, surf, groups)
@@ -105,4 +110,3 @@ class Tree(Generic):
                     surf = self.apple_surf,
                     groups = [self.apple_sprites,self.groups()[0]],
                     z = LAYERS['fruit'])
-

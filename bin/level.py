@@ -2,19 +2,23 @@ from json import load
 from common.imports import *
 from player import Player
 from overlay import Overlay
-from sprites import Generic, Water, WildFlower, Tree
+from sprites import Generic, Water, WildFlower, Tree, Interaction
 from pytmx.util_pygame import load_pygame
 from support import *
+from transition import Transition
 
 class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
         
         self.all_sprites = CameraGroup()
+        self.interaction_sprites = pygame.sprite.Group()
         self.collison_sprites = pygame.sprite.Group()
         self.tree_sprites = pygame.sprite.Group()
         self.setup()
         self.overlay = Overlay(self.player)
+        self.transition = Transition(self.reset, self.player)
+        
 
     def player_add(self, item, amount = 1):
         self.player.item_inventory[item] += amount
@@ -51,7 +55,11 @@ class Level:
                 self.player = Player(pos = (obj.x, obj.y),
                 group = self.all_sprites,
                 collision_sprites = self.collison_sprites,
-                tree_sprites = self.tree_sprites)
+                tree_sprites = self.tree_sprites,
+                interaction_sprites = self.interaction_sprites)
+            
+            if obj.name == 'Bed':
+                Interaction((obj.x, obj.y), (obj.width, obj.height), self.interaction_sprites, obj.name)
 
         Generic(
             pos = (0,0), 
@@ -64,8 +72,15 @@ class Level:
         self.all_sprites.custom_draw(self.player)
         self.all_sprites.update(dt)
         self.overlay.display()
+        if self.player.sleep:
+            self.transition.play()
         print(self.player.item_inventory)
 
+    def reset(self):
+        for tree in self.tree_sprites.sprites():
+            for apple in tree.apple_sprites.sprites():
+                apple.kill()
+            tree.create_fruit()
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
