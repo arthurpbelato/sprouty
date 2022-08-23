@@ -1,4 +1,5 @@
 from common.imports import *
+from support import *
 from pytmx.util_pygame import load_pygame
 
 class SoilTile(pygame.sprite.Sprite):
@@ -14,6 +15,7 @@ class SoilLayer:
         self.soil_sprites = pygame.sprite.Group()
 
         self.soil_surf = pygame.image.load('graphics/soil/o.png')
+        self.soil_surfs = import_folder_dict('graphics/soil')
 
         self.create_soil_grid()
         self.create_hit_rects()
@@ -51,8 +53,41 @@ class SoilLayer:
         for index_row, row in enumerate(self.grid):
             for index_col, cell in enumerate(row):
                 if 'X' in cell:
+
+                    t = 'X' in self.grid[index_row - 1][index_col]
+                    b = 'X' in self.grid[index_row + 1][index_col]
+                    r = 'X' in row[index_col + 1]
+                    l = 'X' in row[index_col - 1]
+
+                    tyle_type = 'o'
+
+                    if all((t,b,r,l)): 
+                        tyle_type = 'x'
+
+                    #vertical
+                    if t and not any((l,r,b)): tyle_type = 'b'
+                    if b and not any((t,l,r)): tyle_type = 't'  
+                    if all((t,b)) and not any((l,r)): tyle_type = 'tb'
+
+                    #horizontal
+                    if all((l,r)) and not any((t,b)): tyle_type = 'lr'
+                    if l and not any((t,r,b)): tyle_type = 'r'
+                    if r and not any((t,l,b)): tyle_type = 'l'  
+
+                    #diagonal
+                    if all((r,b)) and not any((t,l)): tyle_type = 'tl'
+                    if all((t,l)) and not any((r,b)): tyle_type = 'br'
+                    if all((t,r)) and not any((l,b)): tyle_type = 'bl'
+                    if all((b,l)) and not any((r,t)): tyle_type = 'tr'
+
+                    #three sides covered
+                    if all((t,l,b)) and not r: tyle_type = 'rm'
+                    if all((r,l,b)) and not t: tyle_type = 'lrt'
+                    if all((r,l,t)) and not b: tyle_type = 'lrb'
+                    if all((r,t,b)) and not l: tyle_type = 'lm'
+
                     SoilTile(
                         pos = (index_col * TILE_SIZE, index_row * TILE_SIZE),
-                        surf = self.soil_surf,
+                        surf = self.soil_surfs[tyle_type],
                         groups=[self.all_sprites, self.soil_sprites])
 
