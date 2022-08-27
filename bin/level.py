@@ -83,6 +83,7 @@ class Level:
             for apple in tree.apple_sprites.sprites():
                 apple.kill()
             tree.create_fruit()
+        self.soil_layer.remove_water()
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()

@@ -28,6 +28,8 @@ class Graphics:
     WATER = ROOT + 'water/'
     FRUIT = ROOT + 'fruit/'
     STUMPS = ROOT + 'stumps/'
+    SOIL = ROOT + 'soil/'
+    SOIL_WATER = ROOT + 'soil_water/'
 
 LAYERS = {
     'water': 0,
