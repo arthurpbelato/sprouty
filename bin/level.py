@@ -1,4 +1,5 @@
 from json import load
+from random import randint
 from common.imports import *
 from player import Player
 from overlay import Overlay
@@ -7,7 +8,7 @@ from pytmx.util_pygame import load_pygame
 from support import *
 from transition import Transition
 from soil import SoilLayer
-
+from sky import Rain
 class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
@@ -20,7 +21,10 @@ class Level:
         self.setup()
         self.overlay = Overlay(self.player)
         self.transition = Transition(self.reset, self.player)
-        
+
+        self.rain = Rain(self.all_sprites)
+        self.raining = randint(0, 10) > 7
+        self.soil_layer.raining = self.raining
 
     def player_add(self, item, amount = 1):
         self.player.item_inventory[item] += amount
@@ -75,15 +79,25 @@ class Level:
         self.all_sprites.custom_draw(self.player)
         self.all_sprites.update(dt)
         self.overlay.display()
+
+        if self.raining:
+            self.rain.update()
+
         if self.player.sleep:
             self.transition.play()
 
     def reset(self):
+        self.raining = randint(0, 10) > 7
+
         for tree in self.tree_sprites.sprites():
             for apple in tree.apple_sprites.sprites():
                 apple.kill()
             tree.create_fruit()
         self.soil_layer.remove_water()
+
+        self.soil_layer.raining = self.raining
+        if self.raining:
+            self.soil_layer.water_all()
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()

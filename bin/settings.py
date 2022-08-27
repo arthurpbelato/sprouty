@@ -30,6 +30,9 @@ class Graphics:
     STUMPS = ROOT + 'stumps/'
     SOIL = ROOT + 'soil/'
     SOIL_WATER = ROOT + 'soil_water/'
+    RAIN = ROOT + 'rain/'
+    RAIN_DROPS = RAIN + 'drops/'
+    RAIN_FLOOR = RAIN + 'floor/'
 
 LAYERS = {
     'water': 0,
